@@ -1,0 +1,12 @@
+---
+title: "Hello World"
+author: "Caowei"
+date: "2026-06-03"
+categories: [R]
+---
+
+这是第一篇博客 —— 用 R 打印一句问候，并把结果显示在页面上：
+
+```{r}
+print("hello world")
+```

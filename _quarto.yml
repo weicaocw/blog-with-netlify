@@ -1,0 +1,23 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+    - about.qmd
+    - posts/
+
+website:
+  title: "Caowei 的博客"
+  description: "记录数据分析与 R / Python"
+  navbar:
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/weicaocw/blog-with-netlify
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+
+lang: zh
