@@ -3,11 +3,14 @@ _site/
 .quarto/
 /.netlify/
 
-# 密钥文件 —— 绝不提交（从 env.example 复制）
-/env
+# 密钥文件 —— 绝不提交（从 .env.example 复制）
+/.env
 
 # R / 系统杂项
 .Rproj.user/
 .Rhistory
 .RData
 .DS_Store
+
+/.quarto/
+**/*.quarto_ipynb

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 ###############################################################
 # blog-with-netlify · setup 脚本
-# 读取 setup.config.yml（无密钥）+ env（密钥），一键完成：
+# 读取 setup.config.yml（无密钥）+ .env（密钥），一键完成：
 #   脚手架博客 → render.R → workflow → 建 Netlify 站 → 存 secrets
 #   → 本地渲染验证 → 推分支 + 开 PR（拿预览链接）
 # 用法: ./setup.sh [配置文件路径，默认 setup.config.yml]
-#   密钥放在 env 文件（见 env.example），或直接 export 到环境变量。
+#   密钥放在 .env 文件（见 .env.example），或直接 export 到环境变量。
 ###############################################################
 set -euo pipefail
 
@@ -16,7 +16,7 @@ die()  { printf '\033[1;31m✗ %s\033[0m\n' "$*" >&2; exit 1; }
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG="${1:-$DIR/setup.config.yml}"
-ENV_FILE="${ENV_FILE:-$DIR/env}"
+ENV_FILE="${ENV_FILE:-$DIR/.env}"
 TODAY="$(date +%Y-%m-%d)"
 
 # ── 0. 前置检查 + 加载密钥 ────────────────────────────────
@@ -28,7 +28,7 @@ done
 Rscript -e 'if(!requireNamespace("yaml",quietly=TRUE)) quit(status=1)' \
   || die "R 缺少 yaml 包: Rscript -e 'install.packages(\"yaml\")'"
 gh auth status >/dev/null 2>&1 || die "GitHub 未登录: 先运行 gh auth login"
-# 加载密钥文件 env（每行 KEY=value；已被 .gitignore）
+# 加载密钥文件 .env（每行 KEY=value；已被 .gitignore）
 if [ -f "$ENV_FILE" ]; then
   set -a; . "$ENV_FILE"; set +a
 fi
@@ -39,10 +39,10 @@ info "读取配置 $CONFIG"
 CFG_VARS="$(Rscript "$DIR/read-config.R" "$CONFIG")" || die "解析配置失败"
 eval "$CFG_VARS"
 
-# Netlify token：来自 env（NETLIFY_AUTH_TOKEN=...）或已 export 的同名环境变量
+# Netlify token：来自 .env（NETLIFY_AUTH_TOKEN=...）或已 export 的同名环境变量
 NETLIFY_TOKEN="${NETLIFY_AUTH_TOKEN:-}"
 [ -n "$NETLIFY_TOKEN" ] \
-  || die "未提供 Netlify 令牌：在 $ENV_FILE 写 NETLIFY_AUTH_TOKEN=...（参考 env.example），或先 export NETLIFY_AUTH_TOKEN"
+  || die "未提供 Netlify 令牌：在 $ENV_FILE 写 NETLIFY_AUTH_TOKEN=...（参考 .env.example），或先 export NETLIFY_AUTH_TOKEN"
 [ -n "$CFG_SITE_NAME" ] || die "缺少 netlify.site_name"
 REPO="$CFG_GH_OWNER/$CFG_GH_REPO"
 ok "仓库 $REPO · 站点 $CFG_SITE_NAME ($CFG_SITE_URL)"
@@ -250,12 +250,12 @@ info "写入 GitHub secrets 到 $REPO"
 printf '%s' "$NETLIFY_TOKEN" | gh secret set NETLIFY_AUTH_TOKEN -R "$REPO"
 printf '%s' "$SITE_ID"       | gh secret set NETLIFY_SITE_ID    -R "$REPO"
 ok "NETLIFY_AUTH_TOKEN / NETLIFY_SITE_ID 已写入"
-# pat 模式：若 env 提供了 PAT_GITHUB_PR，一并写入（用于 fork PR 的预览评论）
+# pat 模式：若 .env 提供了 PAT_GITHUB_PR，一并写入（用于 fork PR 的预览评论）
 if [ "$CFG_WF_PRTOKEN" = "pat" ] && [ -n "${PAT_GITHUB_PR:-}" ]; then
   printf '%s' "$PAT_GITHUB_PR" | gh secret set PAT_GITHUB_PR -R "$REPO"
   ok "PAT_GITHUB_PR 已写入"
 elif [ "$CFG_WF_PRTOKEN" = "pat" ]; then
-  warn "pr_comment_token=pat 但 env 未提供 PAT_GITHUB_PR，跳过（fork PR 预览评论将失效）"
+  warn "pr_comment_token=pat 但 .env 未提供 PAT_GITHUB_PR，跳过（fork PR 预览评论将失效）"
 fi
 
 # ── 8. 提交并开 PR ────────────────────────────────────────
