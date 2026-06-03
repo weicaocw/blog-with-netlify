@@ -1,0 +1,57 @@
+## ============================================================
+## blog-with-netlify · setup 配置文件
+## 本文件【无密钥，可提交到 git】。
+## 密钥（Netlify 令牌、可选 PAT）放在 env 文件里 —— 见 env.example。
+## ============================================================
+
+## ---------- 1. GitHub 仓库 ----------
+github:
+  owner: "weicaocw"               # GitHub 登录名（非本地 git 提交名）
+  repo: "blog-with-netlify"       # 仓库名
+  visibility: "public"            # public | private
+  default_branch: "main"          # 主分支
+  remote_protocol: "ssh"          # ssh | https
+
+## ---------- 2. Netlify 站点 ----------
+netlify:
+  site_name: "caowei-blog"               # = 项目名 = 网址前缀，Netlify 全局唯一
+  url: "caowei-blog.netlify.app"         # 须 = site_name + ".netlify.app"
+  account_slug: ""                       # 留空=默认团队；多团队时填团队 slug
+
+## ---------- 3. 站点生成器 ----------
+generator:
+  type: "quarto"                  # quarto | litedown | pkgdown
+  output_dir: "_site"             # 含 index.html 的输出目录（写进 workflow 的 path）
+  scaffold: true                  # true=用 quarto 模板新建博客；false=仓库已有源码
+
+## ---------- 4. 站点元信息（站点级，写进 _quarto.yml）----------
+site:
+  title: "Wei's Blog"
+  description: "记录数据分析与 R / Python"
+  author: "Wei"
+  email: "weicaocw@gmail.com"
+  language: "en"
+
+## ---------- 5. CI workflow ----------
+workflow:
+  file: ".github/workflows/build-site.yml"
+  setup_branch: "add-netlify"                                  # setup 时新建的分支名
+  deploy_action: "animint/animint-actions/netlify-deploy-comment@main"
+  pr_comment_token: "personal"    # personal=自动 GITHUB_TOKEN（个人博客）
+                                  # pat=接受 fork 贡献时改用 PAT_GITHUB_PR（令牌写在 env）
+
+## ---------- 6. 多语言依赖（CI 虚拟机里装什么）----------
+dependencies:
+  r:
+    enabled: true                 # 写 R 文章就 true → 生成 render.R 安装这些包
+    packages:
+      - knitr
+      - rmarkdown
+    extra_packages: []            # 额外源的包，如 polars(r-multiverse)；没有就留空 []
+  python:
+    enabled: false                # 以后写 Python 文章改 true → workflow 加 setup-python 装这些包
+    version: "3.12"
+    packages:
+      - jupyter
+      - pandas
+      - matplotlib
