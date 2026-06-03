@@ -1,5 +1,5 @@
 ---
-title: "Caowei 的博客"
+title: "Wei's Blog"
 listing:
   contents: posts
   sort: "date desc"

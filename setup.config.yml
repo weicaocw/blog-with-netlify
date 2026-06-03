@@ -26,11 +26,11 @@ generator:
 
 ## ---------- 4. 站点元信息（站点级，写进 _quarto.yml）----------
 site:
-  title: "Caowei 的博客"
+  title: "Wei's Blog"
   description: "记录数据分析与 R / Python"
-  author: "Caowei"
+  author: "Wei"
   email: "weicaocw@gmail.com"
-  language: "zh"
+  language: "en"
 
 ## ---------- 5. CI workflow ----------
 workflow:

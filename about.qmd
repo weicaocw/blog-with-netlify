@@ -4,4 +4,4 @@ title: "关于"
 
 记录数据分析与 R / Python
 
-作者：Caowei
+作者：Wei

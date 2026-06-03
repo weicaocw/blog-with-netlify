@@ -7,7 +7,7 @@ project:
     - posts/
 
 website:
-  title: "Caowei 的博客"
+  title: "Wei's Blog"
   description: "记录数据分析与 R / Python"
   navbar:
     right:
@@ -20,4 +20,4 @@ format:
     theme: cosmo
     css: styles.css
 
-lang: zh
+lang: en

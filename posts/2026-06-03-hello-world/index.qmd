@@ -1,6 +1,6 @@
 ---
 title: "Hello World"
-author: "Caowei"
+author: "Wei"
 date: "2026-06-03"
 categories: [R]
 ---
